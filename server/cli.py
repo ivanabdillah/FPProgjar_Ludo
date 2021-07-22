@@ -1,8 +1,8 @@
-from .game import Player, Game
-from .painter import present_6_die_name
-from .recorder import RunRecord, MakeRecord
+from game import Player, Game
+from painter import present_6_die_name
 from os import linesep
-from .network import *
+from network import *
+from client import *
 
 
 class CLIGame():
@@ -12,14 +12,11 @@ class CLIGame():
         self.game = Game()
         # used for nicer print
         self.prompted_for_pawn = False
-        # saving game data
-        self.record_maker = MakeRecord()
         # getting game data
         self.record_runner = None
         self.network = Server()
 
-    def validate_input(self, prompt, desire_type, allawed_input=None,
-                       error_mess="Invalid Option!", str_len=None):
+    def validate_input(self, prompt, desire_type, allawed_input=None, error_mess="Invalid Option!", str_len=None):
         '''
         loop while receive correct value
         param allowed_input can be list of allowed values
@@ -59,28 +56,6 @@ class CLIGame():
         choice = self.validate_input(text, int, (0, 1))
         return choice
 
-    def prompt_for_file(self, mode="rb"):
-        '''return file descriptor'''
-        text = "Enter filename (name of the record)"
-        while True:
-            filename = self.validate_input(text, str)
-            try:
-                file_descr = open(filename, mode=mode)
-                return file_descr
-            except IOError as e:
-                print(e)
-                print("Try again")
-
-    def does_user_want_save_game(self):
-        '''return True if user want to save
-        game or False
-        '''
-        text = linesep.join(["Save game?",
-                             "0 - No",
-                             "1 - Yes"])
-        choice = self.validate_input(text, int, (0, 1))
-        return choice == 1
-
     def prompt_for_player(self):
         ''' get player attributes from input,
         initial player instance and
@@ -93,8 +68,7 @@ class CLIGame():
         choice = self.validate_input(text, int, (0, 1))
 
         if choice == 1:
-            name = self.validate_input("Enter name for player",
-                                       str, str_len=(1, 30))
+            name = self.validate_input("Enter name for player", str, str_len=(1, 30))
             available_options = range(len(available_colours))
             if len(available_options) > 1:
                 # show available colours
@@ -116,26 +90,26 @@ class CLIGame():
             player = Player(colour)
         self.game.add_palyer(player)
 
-    def prompt_for_players(self):
-        '''put all players in the game'''
-        counts = ("first", "second", "third", "fourth last")
-        text_add = "Add {} player"
-        for i in range(2):
-            print(text_add.format(counts[i]))
-            self.prompt_for_player()
-            print("Player added")
+    # def prompt_for_players(self):
+    #     '''put all players in the game'''
+    #     counts = ("first", "second", "third", "fourth last")
+    #     text_add = "Add {} player"
+    #     for i in range(2):
+    #         print(text_add.format(counts[i]))
+    #         self.prompt_for_player()
+    #         print("Player added")
 
-        text = linesep.join(["Choose option:",
-                             "0 - add player",
-                             "1 - start game with {} players"])
-        for i in range(2, 4):
-            choice = self.validate_input(text.format(str(i)), int, (0, 1))
-            if choice == 1:
-                break
-            elif choice == 0:
-                print(text_add.format(counts[i]))
-                self.prompt_for_player()
-                print("Player added")
+    #     text = linesep.join(["Choose option:",
+    #                          "0 - add player",
+    #                          "1 - start game with {} players"])
+    #     for i in range(2, 4):
+    #         choice = self.validate_input(text.format(str(i)), int, (0, 1))
+    #         if choice == 1:
+    #             break
+    #         elif choice == 0:
+    #             print(text_add.format(counts[i]))
+    #             self.prompt_for_player()
+    #             print("Player added")
 
     def prompt_choose_pawn(self):
         '''used when player (human) has more than
@@ -202,57 +176,6 @@ class CLIGame():
     def print_board(self):
         print(self.game.get_board_pic())
 
-    def run_recorded_game(self):
-        '''get history of game (rolled_value
-        and  index's allowed pawn) from 
-        record_runner in order to replay game'''
-        self.load_recorded_players()
-        self.print_players_info()
-        self.prompt_to_continue()
-        for rolled_value, index in self.record_runner:
-            self.game.play_turn(index, rolled_value)
-            self.print_info_after_turn()
-            self.print_board()
-            self.prompt_to_continue()
-            self.print_board()
-
-    def continue_recorded_game(self):
-        '''move forward the game by calling 
-        play_turn method to the moment 
-        where game was interrupted. 
-        '''
-        self.load_recorded_players()
-        self.record_players()
-        for rolled_value, index in self.record_runner:
-            self.game.play_turn(index, rolled_value)
-            self.record_maker.add_game_turn(
-                self.game.rolled_value, self.game.index)
-        self.print_players_info()
-        self.print_info_after_turn()
-        self.print_board()
-
-    def record_players(self):
-        '''save players on recorder'''
-        for player in self.game.players:
-            self.record_maker.add_player(player)
-
-    def load_recorded_players(self):
-        '''get recorded (save) players from
-        recorder and put them in game
-        '''
-        if self.record_runner is None:
-            file_descr = self.prompt_for_file()
-            self.record_runner = RunRecord(file_descr)
-            file_descr.close()
-        for player in self.record_runner.get_players(
-                self.prompt_choose_pawn):
-            self.game.add_palyer(player)
-
-    def load_players_for_new_game(self):
-        self.prompt_for_players()
-        self.print_players_info()
-        self.record_players()
-
     def play_game(self):
         '''mainly calling play_turn
         Game's method while game finished
@@ -270,28 +193,20 @@ class CLIGame():
             self.offer_save_game()
         except (KeyboardInterrupt, EOFError):
             print(linesep +
-                  "Exiting game. " +
-                  "Save game and continue same game later?")
+                  "Exiting game. ")
             self.offer_save_game()
             raise
 
-    def offer_save_game(self):
-        '''offer user save game'''
-        if self.does_user_want_save_game():
-            file_descr = self.prompt_for_file(mode="wb")
-            self.record_maker.save(file_descr)
-            file_descr.close()
-            print("Game is saved")
-
     def start(self):
         '''main method, starting cli'''
-        print()
         try:
             choice = self.get_user_initial_choice()
             if choice == 0:  # start new game
                 self.network.send_msg("room|create")
-            elif choice == 1:  # continue game
+                self.prompt_for_player
+            elif choice == 1:
                 self.network.send_msg("room|join")
+                self.prompt_for_player
         except (KeyboardInterrupt, EOFError):
             print(linesep + "Exit Game")
 

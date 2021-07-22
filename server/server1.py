@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+from cli import CLIGame
 from room import *
 from client import Client
 import socket
@@ -19,6 +22,7 @@ class Server:
       self.run()
 
   def handler(self, command, client):
+      command = command.split("|")
       if command[0] == "room":
           if command[1] == "create":
             self.addroom(client)
@@ -50,6 +54,6 @@ class Server:
       if room.playercount < 4:
         room.addclient(client)
         return
-
+    
 server = Server()
 # server.run

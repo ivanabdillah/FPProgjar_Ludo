@@ -1,3 +1,4 @@
+from network import *
 import threading
 from client import *
 
@@ -16,14 +17,26 @@ class Room():
         client.addroom(self)
         self.checkplayer()
 
+
     def sendtoclient (self, client, message):
         for c in self.listclient:
             if c != client:
                 c.send(message)
 
+    def sendlooping (self,client,message):
+        for c in self.listclient:
+            if c == client:
+                c.send(message)
+
     def checkplayer (self):
         if self.playercount == 4:
-            self.broadcast("room|match|username")
+            i=0
+            while True:
+                if i == 4:
+                    i = i-4
+                self.sendlooping(self.listclient[i],"Your turn!")
+                self.network.recv_msg
+                i = i+1
 
     def broadcast (self, message):
         for c in self.listclient:
