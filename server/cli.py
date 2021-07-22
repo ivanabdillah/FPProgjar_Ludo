@@ -62,32 +62,22 @@ class CLIGame():
         add player to the game
         '''
         available_colours = self.game.get_available_colours()
-        text = linesep.join(["choose type of player",
-                             "0 - computer",
-                             "1 - human"])
-        choice = self.validate_input(text, int, (0, 1))
-
-        if choice == 1:
-            name = self.validate_input("Enter name for player", str, str_len=(1, 30))
-            available_options = range(len(available_colours))
-            if len(available_options) > 1:
-                # show available colours
-                options = ["{} - {}".format(index, colour)
-                           for index, colour in
-                           zip(available_options,
-                           available_colours)]
-                text = "choose colour" + linesep
-                text += linesep.join(options)
-                choice = self.validate_input(text, int, available_options)
-                colour = available_colours.pop(choice)
-            else:
-                # only one colour left
-                colour = available_colours.pop()
-            player = Player(colour, name, self.prompt_choose_pawn)
-        elif choice == 0:
-            # automatically assign colours
+        name = self.validate_input("Enter name for player", str, str_len=(1, 30))
+        available_options = range(len(available_colours))
+        if len(available_options) > 1:
+            # show available colours
+            options = ["{} - {}".format(index, colour)
+                        for index, colour in
+                        zip(available_options,
+                        available_colours)]
+            text = "choose colour" + linesep
+            text += linesep.join(options)
+            choice = self.validate_input(text, int, available_options)
+            colour = available_colours.pop(choice)
+        else:
+            # only one colour left
             colour = available_colours.pop()
-            player = Player(colour)
+        player = Player(colour, name, self.prompt_choose_pawn)
         self.game.add_palyer(player)
 
     # def prompt_for_players(self):
@@ -203,10 +193,10 @@ class CLIGame():
             choice = self.get_user_initial_choice()
             if choice == 0:  # start new game
                 self.network.send_msg("room|create")
-                self.prompt_for_player
+                self.prompt_for_player()
             elif choice == 1:
                 self.network.send_msg("room|join")
-                self.prompt_for_player
+                self.prompt_for_player()
         except (KeyboardInterrupt, EOFError):
             print(linesep + "Exit Game")
 

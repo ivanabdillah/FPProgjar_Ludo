@@ -31,6 +31,7 @@ class Room():
     def checkplayer (self):
         if self.playercount == 4:
             i=0
+            self.prompt_for_player(self.listclient)
             while True:
                 if i == 4:
                     i = i-4
