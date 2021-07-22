@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from room import *
 from client import Client
 import socket
@@ -38,7 +36,7 @@ class Server:
             print("room is created")
           if command[1] == "join":
             self.joinroom(client)
-            print("has join the room")
+            print(client,"has join the room")
           if command[1] == "chat":
             client.chat(command[2])
             print(command[2])
@@ -47,9 +45,7 @@ class Server:
       if command[0] == "match":
         client.move(command[1])
 
-
   def run(self):
-    self.start()
     while True:
       sock, addr = self.socket.accept()
       #buat client
@@ -64,6 +60,9 @@ class Server:
       if room.playercount < 4:
         room.addclient(client)
         return
+  def __init__(self):
+        
+      self.network = Server()
 
   def validate_input(self, prompt, desire_type, allawed_input=None, error_mess="Invalid Option!", str_len=None):
       '''
