@@ -1,5 +1,5 @@
 from room import *
-from client import *
+from client import Client
 import socket
 from threading import Thread
 
@@ -19,7 +19,6 @@ class Server:
       self.run()
 
   def handler(self, command, client):
-      command = command.split("|")
       if command[0] == "room":
           if command[1] == "create":
             self.addroom(client)

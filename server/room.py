@@ -23,7 +23,7 @@ class Room():
 
     def checkplayer (self):
         if self.playercount == 4:
-            self.broadcast("room|match|start")
+            self.broadcast("room|match|username")
 
     def broadcast (self, message):
         for c in self.listclient:

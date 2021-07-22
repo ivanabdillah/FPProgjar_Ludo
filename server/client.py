@@ -18,13 +18,10 @@ class Client():
 
     def run(self):
         while True:
-            try:
-                # socket to receive message
-                command = self.socket.recv(self.BUFFER_SIZE).decode()
-                print(command)
-                self.server.handler(command, self)
-            except Exception as e:
-                continue
+            # socket to receive message
+            command = self.socket.recv(self.BUFFER_SIZE).decode()
+            print(command)
+            self.server.handler(command, self)
 
     def username(self, username):
         self.username = username
