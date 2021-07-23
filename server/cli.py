@@ -52,8 +52,11 @@ class CLIGame():
     def get_user_initial_choice(self):
         text = linesep.join(["choose option",
                              "0 - create room",
-                             "1 - join room"])
-        choice = self.validate_input(text, int, (0, 1))
+                             "1 - join room",
+                             "2 - chat",
+                             "3 - username",
+                             "4 - match"])
+        choice = self.validate_input(text, int, (0, 1, 2, 3, 4))
         return choice
 
     def prompt_for_player(self):
@@ -193,10 +196,16 @@ class CLIGame():
             choice = self.get_user_initial_choice()
             if choice == 0:  # start new game
                 self.network.send_msg("room|create")
-                self.prompt_for_player()
             elif choice == 1:
                 self.network.send_msg("room|join")
-                self.prompt_for_player()
+            elif choice == 2:
+                chat = input ("masukkan pesan anda: ")
+                self.network.send_msg("room|chat|"+chat)
+            elif choice == 3:
+                user = input("input username: ")
+                self.network.send_msg("username|"+user)
+            elif choice == 4:
+                self.network.send_msg("match|move")
         except (KeyboardInterrupt, EOFError):
             print(linesep + "Exit Game")
 
