@@ -1,7 +1,7 @@
 from game import Player, Game
 from painter import present_6_die_name
 from os import linesep
-from network import *
+from client_network import *
 from client import *
 
 
@@ -52,11 +52,8 @@ class CLIGame():
     def get_user_initial_choice(self):
         text = linesep.join(["choose option",
                              "0 - create room",
-                             "1 - join room",
-                             "2 - chat",
-                             "3 - username",
-                             "4 - match"])
-        choice = self.validate_input(text, int, (0, 1, 2, 3, 4))
+                             "1 - join room",])
+        choice = self.validate_input(text, int, (0, 1))
         return choice
 
     def prompt_for_player(self):
@@ -169,42 +166,17 @@ class CLIGame():
     def print_board(self):
         print(self.game.get_board_pic())
 
-    def play_game(self):
-        '''mainly calling play_turn
-        Game's method while game finished
-        '''
-        try:
-            while not self.game.finished:
-                self.game.play_turn()
-                self.print_info_after_turn()
-                self.print_board()
-                self.record_maker.add_game_turn(
-                    self.game.rolled_value, self.game.index)
-                # self.prompt_to_continue()
-            print("Game finished")
-            self.print_standing()
-            self.offer_save_game()
-        except (KeyboardInterrupt, EOFError):
-            print(linesep +
-                  "Exiting game. ")
-            self.offer_save_game()
-            raise
 
     def start(self):
         '''main method, starting cli'''
         try:
+            user = input("masukkan username: ")
+            self.network.send_msg("username|"+user)
             choice = self.get_user_initial_choice()
-            if choice == 0:  # start new game
+            if choice == 0:
                 self.network.send_msg("room|create")
             elif choice == 1:
                 self.network.send_msg("room|join")
-            elif choice == 2:
-                self.network.chat()
-            elif choice == 3:
-                user = input("input username: ")
-                self.network.send_msg("username|"+user)
-            elif choice == 4:
-                self.network.send_msg("match|move")
         except (KeyboardInterrupt, EOFError):
             print(linesep + "Exit Game")
 

@@ -1,11 +1,10 @@
-from room import *
+import client
+from server_room import *
 from client import Client
 import socket
 from threading import Thread
-from game import Player, Game
-from painter import present_6_die_name
-from os import linesep
-from network import *
+from game import Game
+from server_play import *
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = '127.0.0.1'
@@ -25,6 +24,7 @@ class Server:
         self.prompted_for_pawn = False
         # getting game data
         self.record_runner = None
+        self.play = servGame()
         self.run()
 
   def handler(self, command, client):
@@ -37,8 +37,8 @@ class Server:
                 self.joinroom(client)
                 print("has join the room")
             if command[1] == "chat":
-                client.chat(command[2])
-                print(command[2])
+                room = Room(client)
+                room.sendtoclient(client, command[2])
         if command[0] == "username":
             client.username(command[1])
         if command[0] == "match":

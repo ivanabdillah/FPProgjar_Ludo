@@ -286,6 +286,7 @@ class Game():
         game must be replicated (recorded)
         ind is chosen index from allowed pawns
         '''
+        print("masuk play_turn")
         self.jog_pawns = []
         self.curr_player = self._get_next_turn()
         if rolled_val is None:

@@ -1,4 +1,4 @@
-from room import *
+from server_room import *
 import threading
 
 # numberid = 0
@@ -15,11 +15,11 @@ class Client():
 
         self.thread = threading.Thread(target=self.run, args=()).start()
 
-
+    #server
     def run(self):
         while True:
             try:
-                # socket to receive message
+                # server menerima pesan dari klien
                 command = self.socket.recv(self.BUFFER_SIZE).decode()
                 print(command)
                 self.server.handler(command, self)
