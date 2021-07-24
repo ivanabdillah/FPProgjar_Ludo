@@ -199,8 +199,7 @@ class CLIGame():
             elif choice == 1:
                 self.network.send_msg("room|join")
             elif choice == 2:
-                chat = input ("masukkan pesan anda: ")
-                self.network.send_msg("room|chat|"+chat)
+                self.network.chat()
             elif choice == 3:
                 user = input("input username: ")
                 self.network.send_msg("username|"+user)

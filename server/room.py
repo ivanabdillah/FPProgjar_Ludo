@@ -76,31 +76,28 @@ class Room():
         return choice
 
     def prompt_for_player(self):
-        self.broadcast("Enter username: ")
+        self.broadcast("Enter name for player: ")
         ''' get player attributes from input,
         initial player instance and
         add player to the game
         '''
-        user = self.server1.sock.recv
-        print(user)
-        available_colours = self.game.get_available_colours()
-        name = self.validate_input("Enter name for player", str, str_len=(1, 30))
-        available_options = range(len(available_colours))
-        if len(available_options) > 1:
-            # show available colours
-            options = ["{} - {}".format(index, colour)
-                        for index, colour in
-                        zip(available_options,
-                        available_colours)]
-            text = "choose colour" + linesep
-            text += linesep.join(options)
-            choice = self.validate_input(text, int, available_options)
-            colour = available_colours.pop(choice)
-        else:
-            # only one colour left
-            colour = available_colours.pop()
-        player = Player(colour, name, self.prompt_choose_pawn)
-        self.game.add_palyer(player)
+
+        # name = self.validate_input("Enter name for player", str, str_len=(1, 30))
+        # if len(available_options) > 1:
+        #     # show available colours
+        #     options = ["{} - {}".format(index, colour)
+        #                 for index, colour in
+        #                 zip(available_options,
+        #                 available_colours)]
+        #     text = "choose colour" + linesep
+        #     text += linesep.join(options)
+        #     choice = self.validate_input(text, int, available_options)
+        #     colour = available_colours.pop(choice)
+        # else:
+        #     # only one colour left
+        #     colour = available_colours.pop()
+        # player = Player(colour, name, self.prompt_choose_pawn)
+        # self.game.add_palyer(player)
 
     # def prompt_for_players(self):
     #     '''put all players in the game'''
