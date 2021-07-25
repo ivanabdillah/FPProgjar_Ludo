@@ -11,6 +11,7 @@ class servGame():
         # used for nicer print
         self.prompted_for_pawn = False
         # getting game data
+        self.players = []
         self.record_runner = None
 
     def validate_input(self, prompt, desire_type, allawed_input=None, error_mess="Invalid Option!", str_len=None):
@@ -46,39 +47,23 @@ class servGame():
                 break
         return choice
 
-    def get_user_initial_choice(self):
-        text = linesep.join(["choose option",
-                             "0 - create room",
-                             "1 - join room",
-                             "2 - chat",
-                             "3 - username",
-                             "4 - match"])
-        choice = self.validate_input(text, int, (0, 1, 2, 3, 4))
-        return choice
-
-    def prompt_for_player(self):
+    def prompt_for_player(self, listclient):
         ''' get player attributes from input,
         initial player instance and
         add player to the game
         '''
-        available_colours = self.game.get_available_colours()
-        name = self.validate_input("Enter name for player", str, str_len=(1, 30))
-        available_options = range(len(available_colours))
-        if len(available_options) > 1:
-            # show available colours
-            options = ["{} - {}".format(index, colour)
-                        for index, colour in
-                        zip(available_options,
-                        available_colours)]
-            text = "choose colour" + linesep
-            text += linesep.join(options)
-            choice = self.validate_input(text, int, available_options)
-            colour = available_colours.pop(choice)
-        else:
-            # only one colour left
-            colour = available_colours.pop()
-        player = Player(colour, name, self.prompt_choose_pawn)
-        self.game.add_palyer(player)
+        # for c in listclient:
+        #     print(c)
+        COLOUR_ORDER = ['yellow', 'blue', 'red', 'green']
+        for c in range(4):
+            player = Player(COLOUR_ORDER.pop(), listclient.pop(), self.prompt_choose_pawn)
+            self.players.append(player)
+
+        # for i in self.players:
+        #     print(i)
+
+        self.game.add_palyer(self.players)
+        self.play_game()
 
     # def prompt_for_players(self):
     #     '''put all players in the game'''
@@ -170,17 +155,12 @@ class servGame():
             '''mainly calling play_turn
             Game's method while game finished
             '''
-            print("masssok boy")
-            self.print_board()
             try:
                 while not self.game.finished:
-                    print("masuk not finished")
                     self.game.play_turn()
                     self.print_info_after_turn()
                     self.print_board()
-                    self.record_maker.add_game_turn(
-                        self.game.rolled_value, self.game.index)
-                    # self.prompt_to_continue()
+                    self.prompt_to_continue()
                 print("Game finished")
                 self.print_standing()
                 self.offer_save_game()

@@ -79,6 +79,8 @@ class CLIGame():
             colour = available_colours.pop()
         player = Player(colour, name, self.prompt_choose_pawn)
         self.game.add_palyer(player)
+        print("udah direturn")
+        return
 
     # def prompt_for_players(self):
     #     '''put all players in the game'''

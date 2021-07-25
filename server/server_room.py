@@ -27,7 +27,7 @@ class Room():
 
     def checkplayer (self):
         if self.playercount == 4:
-            self.play.play_game()
+            self.play.prompt_for_player(self.listclient)
 
     def broadcast (self, message):
         for c in self.listclient:

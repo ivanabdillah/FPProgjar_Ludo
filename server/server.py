@@ -32,10 +32,8 @@ class Server:
         if command[0] == "room":
             if command[1] == "create":
                 self.addroom(client)
-                print("room is created")
             if command[1] == "join":
                 self.joinroom(client)
-                print("has join the room")
             if command[1] == "chat":
                 room = Room(client)
                 room.sendtoclient(client, command[2])
@@ -53,10 +51,12 @@ class Server:
   def addroom(self, client):
     room = Room(client)
     self.listroom.append(room)
+    print("room is created")
 
   def joinroom(self, client):
     for room in self.listroom:
       if room.playercount < 4:
+        print("has join the room")
         room.addclient(client)
         return
 

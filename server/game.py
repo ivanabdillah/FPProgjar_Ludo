@@ -206,10 +206,25 @@ class Game():
         self.jog_pawns = []
 
     def add_palyer(self, player):
-        self.players.append(player)
-        for pawn in player.pawns:
+        name = player
+        player1 = player[0]
+        player2 = player[1]
+        player3 = player[2]
+        player4 = player[3]
+        for c in range(4):
+            self.players.append(name.pop())
+        for i in self.players:
+            print(i)
+        for pawn in player1.pawns:
             self.board.put_pawn_on_board_pool(pawn)
-
+        for pawn in player2.pawns:
+            self.board.put_pawn_on_board_pool(pawn)
+        for pawn in player3.pawns:
+            self.board.put_pawn_on_board_pool(pawn)
+        for pawn in player4.pawns:
+            self.board.put_pawn_on_board_pool(pawn)
+        return
+        
     def get_available_colours(self):
         '''if has available colour on boards'''
         used = [player.colour for player in self.players]
