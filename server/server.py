@@ -3,8 +3,7 @@ from server_room import *
 from client import Client
 import socket
 from threading import Thread
-from game import Game
-from server_play import *
+from server_game import Game
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = '127.0.0.1'
@@ -24,7 +23,6 @@ class Server:
         self.prompted_for_pawn = False
         # getting game data
         self.record_runner = None
-        self.play = servGame()
         self.run()
 
   def handler(self, command, client):
@@ -58,7 +56,6 @@ class Server:
       if room.playercount < 4:
         print("has join the room")
         room.addclient(client)
-        return
 
 server = Server()
 # server.run

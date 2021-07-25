@@ -1,2 +1,4 @@
-x = "tes"
-print("halo|"+x)
+from coba2 import B
+
+class A():
+    B.plus(5,5)

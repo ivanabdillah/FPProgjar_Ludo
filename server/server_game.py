@@ -24,8 +24,6 @@ class Player():
         self.colour = colour
         self.choose_pawn_delegate = choose_pawn_delegate
         self.name = name
-        if self.name is None and self.choose_pawn_delegate is None:
-            self.name = "computer"
         self.finished = False
         # initialize four pawns with
         # id (first leter from colour and index (from 1 to 4))
@@ -213,8 +211,6 @@ class Game():
         player4 = player[3]
         for c in range(4):
             self.players.append(name.pop())
-        for i in self.players:
-            print(i)
         for pawn in player1.pawns:
             self.board.put_pawn_on_board_pool(pawn)
         for pawn in player2.pawns:
@@ -224,7 +220,7 @@ class Game():
         for pawn in player4.pawns:
             self.board.put_pawn_on_board_pool(pawn)
         return
-        
+
     def get_available_colours(self):
         '''if has available colour on boards'''
         used = [player.colour for player in self.players]
@@ -301,7 +297,6 @@ class Game():
         game must be replicated (recorded)
         ind is chosen index from allowed pawns
         '''
-        print("masuk play_turn")
         self.jog_pawns = []
         self.curr_player = self._get_next_turn()
         if rolled_val is None:

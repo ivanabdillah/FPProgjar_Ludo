@@ -1,4 +1,4 @@
-from game import Player, Game
+from server_game import Player, Game
 from painter import present_6_die_name
 from os import linesep
 from client_network import *
@@ -55,32 +55,6 @@ class CLIGame():
                              "1 - join room",])
         choice = self.validate_input(text, int, (0, 1))
         return choice
-
-    def prompt_for_player(self):
-        ''' get player attributes from input,
-        initial player instance and
-        add player to the game
-        '''
-        available_colours = self.game.get_available_colours()
-        name = self.validate_input("Enter name for player", str, str_len=(1, 30))
-        available_options = range(len(available_colours))
-        if len(available_options) > 1:
-            # show available colours
-            options = ["{} - {}".format(index, colour)
-                        for index, colour in
-                        zip(available_options,
-                        available_colours)]
-            text = "choose colour" + linesep
-            text += linesep.join(options)
-            choice = self.validate_input(text, int, available_options)
-            colour = available_colours.pop(choice)
-        else:
-            # only one colour left
-            colour = available_colours.pop()
-        player = Player(colour, name, self.prompt_choose_pawn)
-        self.game.add_palyer(player)
-        print("udah direturn")
-        return
 
     # def prompt_for_players(self):
     #     '''put all players in the game'''
@@ -172,8 +146,8 @@ class CLIGame():
     def start(self):
         '''main method, starting cli'''
         try:
-            user = input("masukkan username: ")
-            self.network.send_msg("username|"+user)
+            # user = input("masukkan username: ")
+            # self.network.send_msg("username|"+user)
             choice = self.get_user_initial_choice()
             if choice == 0:
                 self.network.send_msg("room|create")
