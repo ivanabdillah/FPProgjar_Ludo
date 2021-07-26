@@ -1,4 +1,4 @@
-from server_game import Player, Game
+from server_room import Player, Game
 from painter import present_6_die_name
 from os import linesep
 from client_network import *
@@ -52,7 +52,7 @@ class CLIGame():
     def get_user_initial_choice(self):
         text = linesep.join(["choose option",
                              "0 - create room",
-                             "1 - join room",])
+                             "1 - join room"])
         choice = self.validate_input(text, int, (0, 1))
         return choice
 
@@ -76,29 +76,6 @@ class CLIGame():
     #             print(text_add.format(counts[i]))
     #             self.prompt_for_player()
     #             print("Player added")
-
-    def prompt_choose_pawn(self):
-        '''used when player (human) has more than
-        one possible pawn to move.
-        This method is pass as a callable during
-        player instantiation
-        '''
-        text = present_6_die_name(self.game.rolled_value,
-                                  str(self.game.curr_player))
-        text += linesep + "has more than one possible pawns to move."
-        text += " Choose pawn" + linesep
-        pawn_options = ["{} - {}".format(index + 1, pawn.id)
-                        for index, pawn
-                        in enumerate(self.game.allowed_pawns)]
-        text += linesep.join(pawn_options)
-        index = self.validate_input(
-            text, int, range(1, len(self.game.allowed_pawns) + 1))
-        self.prompted_for_pawn = True
-        return index - 1
-
-    def prompt_to_continue(self):
-        text = "press Enter to continue" + linesep
-        input(text)
 
     def print_players_info(self):
         word = "start" if self.game.rolled_value is None else "continue"
@@ -146,13 +123,24 @@ class CLIGame():
     def start(self):
         '''main method, starting cli'''
         try:
-            # user = input("masukkan username: ")
-            # self.network.send_msg("username|"+user)
+            # while True:
             choice = self.get_user_initial_choice()
             if choice == 0:
                 self.network.send_msg("room|create")
+                # break
             elif choice == 1:
                 self.network.send_msg("room|join")
+                    # break
+                # elif choice == 2:
+                #     while True:
+                #         msgg = input ("Masukkan pesan anda (untuk keluar ketikkan exit): ")
+                #         if msgg != "exit":
+                #             self.network.send_msg("room|chat|"+msgg)
+                #         else:
+                #             break
+            while True:
+                msg = input()
+                self.network.send_msg(msg)
         except (KeyboardInterrupt, EOFError):
             print(linesep + "Exit Game")
 

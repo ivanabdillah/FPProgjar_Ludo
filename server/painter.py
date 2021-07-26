@@ -97,6 +97,6 @@ def present_6_die_name(number, name):
               ['| # # # |', '|       |', '| # # # |']]
     matrix = [[sps + cell for cell in row] for row in matrix]
     die = matrix[number - 1]
-    die[1] = die[1] + "   " + name
+    die[1] = die[1]
     s = linesep.join([hor_line] + die + [hor_line])
     return s

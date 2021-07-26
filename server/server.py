@@ -1,9 +1,7 @@
-import client
 from server_room import *
 from client import Client
 import socket
 from threading import Thread
-from server_game import Game
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = '127.0.0.1'
@@ -23,7 +21,7 @@ class Server:
         self.prompted_for_pawn = False
         # getting game data
         self.record_runner = None
-        self.run()
+        self.thread = threading.Thread(target=self.run, args=()).start()
 
   def handler(self, command, client):
         command = command.split("|")
@@ -33,8 +31,9 @@ class Server:
             if command[1] == "join":
                 self.joinroom(client)
             if command[1] == "chat":
-                room = Room(client)
-                room.sendtoclient(client, command[2])
+                for i in listclient:
+                  if i != client:
+                    i.send(command[2])
         if command[0] == "username":
             client.username(command[1])
         if command[0] == "match":
@@ -45,6 +44,7 @@ class Server:
         sock, addr = self.socket.accept()
         #buat client
         client = Client(sock, addr, self)
+
     
   def addroom(self, client):
     room = Room(client)

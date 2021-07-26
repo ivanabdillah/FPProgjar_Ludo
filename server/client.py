@@ -1,4 +1,3 @@
-from server_room import *
 import threading
 
 # numberid = 0
@@ -12,7 +11,6 @@ class Client():
         self.id = Client.numberid
         self.BUFFER_SIZE = 2048
         Client.numberid += 1
-
         self.thread = threading.Thread(target=self.run, args=()).start()
 
     #server
