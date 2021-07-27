@@ -1,5 +1,4 @@
 from server_room import *
-from client import Client
 import socket
 from threading import Thread
 
@@ -36,8 +35,8 @@ class Server:
                     i.send(command[2])
         if command[0] == "username":
             client.username(command[1])
-        if command[0] == "move":
-            choose.append(command[1])
+        # if command[0] == "move":
+        #     choose.append(command[1])
             
 
   def run(self):

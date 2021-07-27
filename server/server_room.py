@@ -1,15 +1,52 @@
 import threading
-from client import Client
 from painter import present_6_die_name
 from os import linesep
 from collections import namedtuple, deque
 import random
 from painter import PaintBoard
 import time
+import ctypes
 
 Pawn = namedtuple("Pawn", "index colour id")
 listclient = []
+isplay = []
 choose = []
+
+# numberid = 0
+
+class Client():
+    numberid = 0
+    def __init__(self, socket, addr, server):
+        self.socket = socket
+        self.addr = addr
+        self.server = server
+        self.id = Client.numberid
+        self.BUFFER_SIZE = 2048
+        Client.numberid += 1
+        self._stopevent = threading.Event()
+        self.thread = threading.Thread(target=self.run, args=()).start()
+
+    #server
+    def run(self):
+        while True:
+            try:
+                # server menerima pesan dari klien
+                command = self.socket.recv(self.BUFFER_SIZE).decode()
+                if len(isplay) == 0:
+                    print(command)
+                    self.server.handler(command, self)
+                else:
+                    # print(command)
+                    choose.append(command)
+                    # print(choose)
+            except Exception as e:
+                continue
+
+    def send(self, message):
+        self.socket.send(message.encode())
+
+    def addroom(self, room):
+        self.room = room
 
 class Room():
     numberid = 0
@@ -47,6 +84,10 @@ class Room():
 
     def checkplayer (self):
         if self.playercount == 4:
+            isplay.append(1)
+            isplay.append(2)
+            isplay.append(3)
+            isplay.append(4)
             self.prompt_for_player()
 
     def broadcast (self, message):
@@ -77,12 +118,10 @@ class Room():
             self.print_board()
             while not self.game.finished:
                 self.game.play_turn()
-                # time.sleep(2)
-                self.prompt_to_continue()
-                # time.sleep(2)
+                time.sleep(2)
                 self.print_info_after_turn()
                 self.print_board()
-                # time.sleep(2)
+                time.sleep(2)
             print("Game finished")
             self.print_standing()
         except (KeyboardInterrupt, EOFError):
@@ -123,15 +162,22 @@ class Room():
                 break
         return choice
 
+    def getindex(self):
+        while True:
+            if len(choose) != 0:
+                break
+        return int(choose.pop())
+
     def prompt_choose_pawn(self):
         '''used when player (human) has more than
         one possible pawn to move.
         This method is pass as a callable during
         player instantiation
         '''
+        dice = present_6_die_name(self.game.rolled_value, str(self.game.curr_player))
         text = present_6_die_name(self.game.rolled_value, str(self.game.curr_player))
         text += linesep + "has more than one possible pawns to move."
-        text += " Choose pawn" + linesep
+        text += " Choose pawn!" + linesep
         pawn_options = ["{} - {}".format(index + 1, pawn.id)
                         for index, pawn
                         in enumerate(self.game.allowed_pawns)]
@@ -142,10 +188,17 @@ class Room():
             u = str(i)
             if cli[0] == u:
                 Room.sendlooping(self,i,text)
+                # Room.sendlooping(self,i,"(Press 'Y' to continue)")
         # nerima input dari client dimasukkin ke index
-        index = self.validate_input( text, int, range(1, len(self.game.allowed_pawns) + 1))
-        if len(pawn_options) != 0:
-            q
+        # index = self.validate_input( text, int, range(1, len(self.game.allowed_pawns) + 1))
+        print(dice)
+        if len(pawn_options) > 1 :
+            print("Player has more than one possible pawns to move.\n" + linesep.join(pawn_options)+
+                "\nPlayer choose pawn!")
+            index = self.getindex()
+        else:
+            text += linesep + self.prompt_end
+            print(text)
         self.prompted_for_pawn = True
         return index - 1
 

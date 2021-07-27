@@ -2,7 +2,6 @@ from server_room import Player, Game
 from painter import present_6_die_name
 from os import linesep
 from client_network import *
-from client import *
 
 
 class CLIGame():
