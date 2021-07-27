@@ -36,8 +36,9 @@ class Server:
                     i.send(command[2])
         if command[0] == "username":
             client.username(command[1])
-        if command[0] == "match":
-            client.move(command[1])
+        if command[0] == "move":
+            choose.append(command[1])
+            
 
   def run(self):
     while True:

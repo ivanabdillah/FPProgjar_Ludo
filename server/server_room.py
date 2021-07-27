@@ -9,6 +9,7 @@ import time
 
 Pawn = namedtuple("Pawn", "index colour id")
 listclient = []
+choose = []
 
 class Room():
     numberid = 0
@@ -73,12 +74,15 @@ class Room():
         Game's method while game finished
         '''
         try:
+            self.print_board()
             while not self.game.finished:
                 self.game.play_turn()
+                # time.sleep(2)
+                self.prompt_to_continue()
+                # time.sleep(2)
                 self.print_info_after_turn()
                 self.print_board()
-                self.prompt_to_continue()
-                time.sleep(2)
+                # time.sleep(2)
             print("Game finished")
             self.print_standing()
         except (KeyboardInterrupt, EOFError):
@@ -138,12 +142,15 @@ class Room():
             u = str(i)
             if cli[0] == u:
                 Room.sendlooping(self,i,text)
+        # nerima input dari client dimasukkin ke index
         index = self.validate_input( text, int, range(1, len(self.game.allowed_pawns) + 1))
+        if len(pawn_options) != 0:
+            q
         self.prompted_for_pawn = True
         return index - 1
 
     def prompt_to_continue(self):
-        text = "Dadu rolled!" + linesep
+        text = "Dice rolled!" + linesep
         name = str(self.game.curr_player)
         cli = name.split("(")
         for i in listclient:
@@ -166,13 +173,6 @@ class Room():
         # nicer print of dice
         message = present_6_die_name(self.game.rolled_value, str(self.game.curr_player))
         message += linesep
-        print(message)
-        # name = str(self.curr_player)
-        # cli = name.split("(")
-        # for i in listclient:
-        #     u = str(i)
-        #     if cli[0] == u:
-        #         Room.sendlooping(self,i,"Your turn!")
         if self.game.allowed_pawns:
             message_moved = "{} is moved. ".format(
                 self.game.picked_pawn.id)
@@ -187,7 +187,7 @@ class Room():
                 message += " ".join([pawn.id for pawn in self.game.jog_pawns])
         else:
             message += "No possible pawns to move."
-        # print(message)
+        print(message)
         name = str(self.game.curr_player)
         cli = name.split("(")
         for i in listclient:
