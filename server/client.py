@@ -1,5 +1,4 @@
 from server_room import *
-from painter import present_6_die_name
 from os import linesep
 from client_network import *
 

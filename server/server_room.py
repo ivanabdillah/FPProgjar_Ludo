@@ -5,7 +5,6 @@ from collections import namedtuple, deque
 import random
 from painter import PaintBoard
 import time
-import ctypes
 
 Pawn = namedtuple("Pawn", "index colour id")
 listclient = []
@@ -14,7 +13,6 @@ choose = []
 listroomcli = []
 
 # numberid = 0
-
 class Client():
     numberid = 0
     def __init__(self, socket, addr, server):
