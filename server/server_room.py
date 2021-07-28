@@ -22,7 +22,6 @@ class Client():
         self.id = Client.numberid
         self.BUFFER_SIZE = 2048
         Client.numberid += 1
-        self._stopevent = threading.Event()
         self.thread = threading.Thread(target=self.run, args=()).start()
 
     #server
@@ -35,6 +34,7 @@ class Client():
                     print(command)
                     self.server.handler(command, self)
                 else:
+                    print(command)
                     choose.append(command)
             except Exception as e:
                 continue
@@ -81,7 +81,7 @@ class Room():
 
     def checkplayer (self):
         if self.playercount == 4:
-            if len(listroomcli) == 0: 
+            if len(listroomcli) == 0:
                 isplay.append(1)
                 self.prompt_for_player()
 
@@ -113,10 +113,10 @@ class Room():
             self.print_board()
             while not self.game.finished:
                 self.game.play_turn()
-                time.sleep(2)
+                # time.sleep(2)
                 self.print_info_after_turn()
                 self.print_board()
-                time.sleep(2)
+                # time.sleep(2)
             print("Game finished")
             self.print_standing()
         except (KeyboardInterrupt, EOFError):
@@ -158,10 +158,12 @@ class Room():
         return choice
 
     def getindex(self):
+        
         while True:
-            time.sleep(1)
+            time.sleep(2)
             if len(choose) != 0:
                 break
+            # print(len(choose))
         return int(choose.pop())
 
     def prompt_choose_pawn(self):
@@ -184,9 +186,6 @@ class Room():
             u = str(i)
             if cli[0] == u:
                 Room.sendlooping(self,i,text)
-                # Room.sendlooping(self,i,"(Press 'Y' to continue)")
-        # nerima input dari client dimasukkin ke index
-        # index = self.validate_input( text, int, range(1, len(self.game.allowed_pawns) + 1))
         print(dice)
         if len(pawn_options) > 1 :
             print("Player has more than one possible pawns to move.\n" + linesep.join(pawn_options)+

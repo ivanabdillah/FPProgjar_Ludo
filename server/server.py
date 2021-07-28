@@ -60,12 +60,13 @@ class Server:
 
   def addchatroom (self,client):
     room = Room(client)
+    print("has enter chat room")
     listroomcli.append(room)
 
   def joinroomcli(self, client):
     for room in listroomcli:
       if room.playercount < 4:
-        print("has join the room")
+        print("has enter chat room")
         room.addclient(client)
     
   def addroom(self, client):
