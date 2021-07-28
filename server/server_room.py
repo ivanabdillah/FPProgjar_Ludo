@@ -159,6 +159,7 @@ class Room():
 
     def getindex(self):
         while True:
+            time.sleep(1)
             if len(choose) != 0:
                 break
         return int(choose.pop())
@@ -221,12 +222,18 @@ class Room():
         # nicer print of dice
         message = present_6_die_name(self.game.rolled_value, str(self.game.curr_player))
         message += linesep
+        name = str(self.game.curr_player)
+        cli = name.split("(")
         if self.game.allowed_pawns:
             message_moved = "{} is moved. ".format(
                 self.game.picked_pawn.id)
             if self.prompted_for_pawn:
                 self.prompted_for_pawn = False
                 print(message_moved)
+                for i in listclient:
+                    u = str(i)
+                    if cli[0] == u:
+                        Room.sendlooping(self,i,message_moved)
                 return
             message += "{} possible pawns to move.".format(" ".join(pawns_id))
             message += " " + message_moved
@@ -236,8 +243,6 @@ class Room():
         else:
             message += "No possible pawns to move."
         print(message)
-        name = str(self.game.curr_player)
-        cli = name.split("(")
         for i in listclient:
             u = str(i)
             if cli[0] == u:
