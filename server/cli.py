@@ -1,4 +1,4 @@
-from server_room import Player, Game
+from server_room import *
 from painter import present_6_die_name
 from os import linesep
 from client_network import *
@@ -51,28 +51,32 @@ class CLIGame():
     def get_user_initial_choice(self):
         text = linesep.join(["choose option",
                              "0 - create room",
-                             "1 - join room"])
-        choice = self.validate_input(text, int, (0, 1))
+                             "1 - join room",
+                             "2 - enter chatroom"])
+        choice = self.validate_input(text, int, (0, 1, 2))
         return choice
 
     def start(self):
         '''main method, starting cli'''
         try:
-            # while True:
-            choice = self.get_user_initial_choice()
-            if choice == 0:
-                self.network.send_msg("room|create")
-                # break
-            elif choice == 1:
-                self.network.send_msg("room|join")
-                    # break
-                # elif choice == 2:
-                #     while True:
-                #         msgg = input ("Masukkan pesan anda (untuk keluar ketikkan exit): ")
-                #         if msgg != "exit":
-                #             self.network.send_msg("room|chat|"+msgg)
-                #         else:
-                #             break
+            while True:
+                choice = self.get_user_initial_choice()
+                if choice == 0:
+                    self.network.send_msg("room|create")
+                    break
+                elif choice == 1:
+                    self.network.send_msg("room|join")
+                    break
+                elif choice == 2:
+                    print("Press 'Y' to enter chatroom!")
+                    while True:
+                        msgg = input()
+                        print ("Masukkan pesan anda (untuk keluar ketikkan exit): ")
+                        if msgg != "exit":
+                            self.network.send_msg("room|chat|" + msgg)
+                        else:
+                            self.network.send_msg("reset")
+                            break
             while True:
                 msg = input()
                 self.network.send_msg(msg)

@@ -30,14 +30,27 @@ class Server:
             if command[1] == "join":
                 self.joinroom(client)
             if command[1] == "chat":
+                flag = 0
+                for c in listclient:
+                  if c == client:
+                    flag = 1
+                if flag == 0:
+                  if len(listroomcli) == 0:
+                    self.addchatroom(client)
+                  else:
+                    self.joinroomcli(client)
                 for i in listclient:
                   if i != client:
-                    i.send(command[2])
-        if command[0] == "username":
-            client.username(command[1])
-        # if command[0] == "move":
-        #     choose.append(command[1])
-            
+                    if command[2] == 'Y':
+                      i.send("Someone has entered chatroom!")
+                    else:
+                      i.send(command[2])
+        if command[0] == "reset":
+            for i in listclient:
+              if i == client:
+                listclient.remove(i)
+            for c in listroomcli:
+              listroomcli.pop()
 
   def run(self):
     while True:
@@ -45,6 +58,15 @@ class Server:
         #buat client
         client = Client(sock, addr, self)
 
+  def addchatroom (self,client):
+    room = Room(client)
+    listroomcli.append(room)
+
+  def joinroomcli(self, client):
+    for room in listroomcli:
+      if room.playercount < 4:
+        print("has join the room")
+        room.addclient(client)
     
   def addroom(self, client):
     room = Room(client)

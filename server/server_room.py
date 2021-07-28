@@ -11,6 +11,7 @@ Pawn = namedtuple("Pawn", "index colour id")
 listclient = []
 isplay = []
 choose = []
+listroomcli = []
 
 # numberid = 0
 
@@ -36,9 +37,7 @@ class Client():
                     print(command)
                     self.server.handler(command, self)
                 else:
-                    # print(command)
                     choose.append(command)
-                    # print(choose)
             except Exception as e:
                 continue
 
@@ -84,11 +83,9 @@ class Room():
 
     def checkplayer (self):
         if self.playercount == 4:
-            isplay.append(1)
-            isplay.append(2)
-            isplay.append(3)
-            isplay.append(4)
-            self.prompt_for_player()
+            if len(listroomcli) == 0: 
+                isplay.append(1)
+                self.prompt_for_player()
 
     def broadcast (self, message):
         for c in listclient:
