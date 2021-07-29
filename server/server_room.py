@@ -113,10 +113,10 @@ class Room():
             self.print_board()
             while not self.game.finished:
                 self.game.play_turn()
-                # time.sleep(2)
+                time.sleep(2)
                 self.print_info_after_turn()
                 self.print_board()
-                # time.sleep(2)
+                time.sleep(2)
             print("Game finished")
             self.print_standing()
         except (KeyboardInterrupt, EOFError):
